@@ -1,10 +1,10 @@
-﻿/**************************************************************
-** Name: Gina Guidotti, Justin Marsland and Paiktra Nom      **
-** Due Date: December 1st, 2019                              **
-** Class: SE 340                                             **
-** Instructor: Xiaoli Mao                                    **
-** Functionality: Main Program to run Project                **
-***************************************************************/
+﻿/*******************************************************************
+** Name         : Gina Guidotti, Justin Marsland and Paiktra Nom  **
+** Due Date     : December 1st, 2019                              **
+** Class        : SE 340                                          **
+** Instructor   : Xiaoli Mao                                      **
+** Functionality: Main program that runs this System.             **
+*******************************************************************/
 using System;
 
 namespace cryptographySystem
@@ -16,8 +16,7 @@ namespace cryptographySystem
             const string key = "softwarearchitecture";
             string plaintext = "";
             string encrypttext = "";
-            string decrypttext = "";
-            int choice;
+            string decrypttext = ""; 
             VigenereCipher theCipher = new VigenereCipher();
             Console.WriteLine("Enter a string to be encrypted: ");
             plaintext = Console.ReadLine();
