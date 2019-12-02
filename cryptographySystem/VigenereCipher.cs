@@ -15,62 +15,67 @@ using System.Linq;
 namespace cryptographySystem
 {
     class VigenereCipher
-    {
-        private const char LowChar = 'A';
-        private const char HighChar = 'Z';
-        private const int AlphaSize = HighChar - LowChar + 1;
-
-        public string Encrypt(string plaintext, string key)
+    {      
+        public VigenereCipher()
         {
-            plaintext = PrepareInput(plaintext);
-            key = PrepareInput(key);
+            Console.Write("Creation of the Vigenere Cipher:\n");
+        }
 
-            var ciphertext = new StringBuilder();
-            for (var i = 0; i < plaintext.Length; i++)
+        
+        //The method that does all the work
+        private string Cipher(string input, string key, bool encipher)
+        {
+            for (int i = 0; i < key.Length; ++i)
+                if (!char.IsLetter(key[i]))
+                    return "Error: Not a letter";  
+
+            string output = string.Empty;
+            int nonAlphaCharCount = 0;
+
+            for (int i = 0; i < input.Length; ++i)
             {
-                var offset = key[i % key.Length] - LowChar + 1;
-                var encrypted = plaintext[i] + offset;
-                if (encrypted > HighChar)
+                if (char.IsLetter(input[i]))
                 {
-                    encrypted -= AlphaSize;
+                    bool cIsUpper = char.IsUpper(input[i]);
+                    char offset = cIsUpper ? 'A' : 'a';
+                    int keyIndex = (i - nonAlphaCharCount) % key.Length;
+                    int k = (cIsUpper ? char.ToUpper(key[keyIndex]) : char.ToLower(key[keyIndex])) - offset;
+                    k = encipher ? k : -k;
+                    char ch = (char)((Mod(((input[i] + k) - offset), 26)) + offset);
+                    output += ch;
                 }
-
-                ciphertext.Append((char)encrypted);
+                else
+                {
+                    output += input[i];
+                    ++nonAlphaCharCount;
+                }
             }
 
-            return ciphertext.ToString();
+            return output;
         }
 
-        public string Decrypt(string ciphertext, string key)
+        //To be called for encrypting the input string
+        public string Encrypt(string input, string key)
         {
-            ciphertext = PrepareInput(ciphertext);
-            key = PrepareInput(key);
-
-            var plaintext = new StringBuilder();
-            for (var i = 0; i < ciphertext.Length; i++)
-            {
-                var offset = key[i % key.Length] - LowChar + 1;
-                var decrypted = ciphertext[i] - offset;
-                if (decrypted < LowChar)
-                {
-                    decrypted += AlphaSize;
-                }
-
-                plaintext.Append((char)decrypted);
-            }
-
-            return plaintext.ToString();
+            return Cipher(input, key, true);
         }
 
-        private static string PrepareInput(string input)
+        //To be called for decrypting the input string
+        public string Decrypt(string input, string key)
         {
-            var regex = new Regex("[^A-Z]");
-            return regex.Replace(input.ToUpper(), string.Empty);
+            return Cipher(input, key, false);
         }
 
+        //To be called for printing the input string
         public void PrintStringText(string input)
         {
             Console.WriteLine("Text: " + input);
+        }
+        
+        //To be called for doing the mod operation
+        private static int Mod(int a, int b)
+        {
+            return (a % b + b) % b;
         }
 
     }
